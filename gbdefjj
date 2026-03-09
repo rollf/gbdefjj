@@ -8,6 +8,14 @@ right="$2"
 
 patch_file="$(mktemp --suffix=.patch)"
 
+nvim_neogit() {
+  # Use <F4> to quit with `exit 1`, thus aborting the jj-opration completely.
+  # Use <F10> to confirm, thus adding all staged changes into the first commit.
+  nvim -c ':Neogit' -c ':map <F4> :cq<cr>' -c ':map <F10> :qa!<cr>'
+}
+
+GBDEFJJ_EDITOR=${GBDEFJJ_EDITOR:-nvim_neogit}
+
 (
   cd "$right"
 
@@ -24,8 +32,8 @@ patch_file="$(mktemp --suffix=.patch)"
   # Re-apply and changes.
   patch --strip=1 <"$patch_file"
 
-  # Interactively unstage changes, then remove all unstaged changes.
-  "$EDITOR" -c ":Neogit" -c ":map <F4> :cq<cr>" -c ":map <F10> :qa!<cr>"
+  # Interactively stage changes, then remove all unstaged changes.
+  $GBDEFJJ_EDITOR
   git checkout .
   git clean -xfd
   rm -rf ./.git
