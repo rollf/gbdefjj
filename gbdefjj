@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# https://www.knifepoint.net/~kat/kb-jj-patchedit.html
+set -xev
+
+left="$1"
+right="$2"
+
+patch_file="$(mktemp --suffix=.patch)"
+
+(
+  cd "$right"
+
+  # Prepare patch by comparing left & right.
+  diff --new-file --text --unified --exclude JJ-INSTRUCTIONS --recursive "$left"/ ./ \
+    >"$patch_file" || (($? == 1))
+
+  # Un-apply patch and prepare the initial state.
+  patch --reverse --strip=1 <"$patch_file"
+  git init .
+  git add .
+  git commit -m 'orig left'
+
+  # Re-apply and changes.
+  patch --strip=1 <"$patch_file"
+
+  # Interactively unstage changes, then remove all unstaged changes.
+  "$EDITOR" -c ":Neogit" -c ":map <F4> :cq<cr>" -c ":map <F10> :qa!<cr>"
+  git checkout .
+  git clean -xfd
+  rm -rf ./.git
+)
