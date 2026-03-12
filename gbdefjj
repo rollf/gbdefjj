@@ -9,9 +9,41 @@ right="$2"
 patch_file="$(mktemp --suffix=.patch)"
 
 nvim_neogit() {
-  # Use <F4> to quit with `exit 1`, thus aborting the jj-opration completely.
-  # Use <F10> to confirm, thus adding all staged changes into the first commit.
-  nvim -c ':Neogit' -c ':map <F4> :cq<cr>' -c ':map <F10> :qa!<cr>'
+  local init_file
+  init_file="$(mktemp --suffix=.lua)"
+  cat >"$init_file" <<EOF
+  -- Use <F4> to abort the split operation.
+  vim.keymap.set("n", "<F4>", "<cmd>cq<cr>")
+
+  -- Use c to close the current buffer.
+  vim.keymap.set("n", "c", "<cmd>qa!<cr>")
+
+  -- Unload Neogit to allow the custom config (see below) to apply.
+  package.loaded["neogit"] = nil
+
+  local neogit = require("neogit")
+  neogit.setup({
+    disable_hint = false,
+    sections = {
+      -- Show new files (in this commit).
+      untracked = { folded = false, hidden = false },
+    },
+    mappings = {
+      popup = {
+        -- Disable this mapping to open the commit popup thereby enabling the
+        -- mapping of "c" from above.
+        ["c"] = false,
+      },
+    },
+  })
+
+  -- Open Neogit immediately.
+  neogit.open()
+
+  -- Close the empty buffer that got opened when Neovim was started.
+  vim.cmd("tabclose #")
+EOF
+  nvim -c ":source $init_file"
 }
 
 GBDEFJJ_EDITOR=${GBDEFJJ_EDITOR:-nvim_neogit}
