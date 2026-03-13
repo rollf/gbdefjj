@@ -6,8 +6,6 @@ set -xev
 left="$1"
 right="$2"
 
-patch_file="$(mktemp --suffix=.patch)"
-
 nvim_neogit() {
   init=$(cat << EOF
 -- Use <F4> to abort the split operation.
@@ -49,6 +47,8 @@ GBDEFJJ_EDITOR=${GBDEFJJ_EDITOR:-nvim_neogit}
 
 (
   cd "$right"
+
+  patch_file="$(mktemp --suffix=.patch)"
 
   # Prepare patch by comparing left & right.
   diff --new-file --text --unified --exclude JJ-INSTRUCTIONS --recursive "$left"/ ./ \
