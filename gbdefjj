@@ -9,41 +9,40 @@ right="$2"
 patch_file="$(mktemp --suffix=.patch)"
 
 nvim_neogit() {
-  local init_file
-  init_file="$(mktemp --suffix=.lua)"
-  cat >"$init_file" <<EOF
-  -- Use <F4> to abort the split operation.
-  vim.keymap.set("n", "<F4>", "<cmd>cq<cr>")
+  init=$(cat << EOF
+-- Use <F4> to abort the split operation.
+vim.keymap.set("n", "<F4>", "<cmd>cq<cr>")
 
-  -- Use cc to close the current buffer.
-  vim.keymap.set({"n", "v"}, "cc", "<cmd>qa!<cr>")
+-- Use cc to close the current buffer.
+vim.keymap.set({"n", "v"}, "cc", "<cmd>qa!<cr>")
 
-  -- Unload Neogit to allow the custom config (see below) to apply.
-  package.loaded["neogit"] = nil
+-- Unload Neogit to allow the custom config (see below) to apply.
+package.loaded["neogit"] = nil
 
-  local neogit = require("neogit")
-  neogit.setup({
-    disable_hint = false,
-    sections = {
-      -- Show new files (in this commit).
-      untracked = { folded = false, hidden = false },
+local neogit = require("neogit")
+neogit.setup({
+  disable_hint = false,
+  sections = {
+    -- Show new files (in this commit).
+    untracked = { folded = false, hidden = false },
+  },
+  mappings = {
+    popup = {
+      -- Disable this mapping to open the commit popup thereby enabling the
+      -- mapping of "c" from above.
+      ["c"] = false,
     },
-    mappings = {
-      popup = {
-        -- Disable this mapping to open the commit popup thereby enabling the
-        -- mapping of "c" from above.
-        ["c"] = false,
-      },
-    },
-  })
+  },
+})
 
-  -- Open Neogit immediately.
-  neogit.open()
+-- Open Neogit immediately.
+neogit.open()
 
-  -- Close the empty buffer that got opened when Neovim was started.
-  vim.cmd("tabclose #")
+-- Close the empty buffer that got opened when Neovim was started.
+vim.cmd("tabclose #")
 EOF
-  nvim -c ":source $init_file"
+)
+  nvim -c ":lua $init"
 }
 
 GBDEFJJ_EDITOR=${GBDEFJJ_EDITOR:-nvim_neogit}
