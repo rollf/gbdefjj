@@ -15,8 +15,8 @@ nvim_neogit() {
   -- Use <F4> to abort the split operation.
   vim.keymap.set("n", "<F4>", "<cmd>cq<cr>")
 
-  -- Use c to close the current buffer.
-  vim.keymap.set("n", "c", "<cmd>qa!<cr>")
+  -- Use cc to close the current buffer.
+  vim.keymap.set({"n", "v"}, "cc", "<cmd>qa!<cr>")
 
   -- Unload Neogit to allow the custom config (see below) to apply.
   package.loaded["neogit"] = nil
