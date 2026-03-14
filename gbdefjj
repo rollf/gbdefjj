@@ -6,6 +6,8 @@ left="$1"
 right="$2"
 
 git_add_p() {
+  # We need to `add --intent-to-add` so that new files (new in the commit to be
+  # diff-edited) are shown by `add -p` just below.
   git add --intent-to-add .
   git status
   git add -p
@@ -18,7 +20,7 @@ nvim_neogit() {
 -- Use <F4> to abort the diff-edit operation.
 vim.keymap.set("n", "<F4>", "<cmd>cq<cr>")
 
--- Use cc to close the current buffer.
+-- Use cc to close the Neovim.
 vim.keymap.set({"n", "v"}, "cc", "<cmd>qa!<cr>")
 
 -- Unload Neogit to allow the custom config (see below) to apply.
@@ -33,7 +35,7 @@ neogit.setup({
   },
   mappings = {
     popup = {
-      -- Disable this mapping to open the commit popup thereby enabling the
+      -- Disable the mapping to open the commit popup thereby enabling the
       -- mapping of "cc" from above which will then drop us into the commit
       -- message description of the first (Jujutsu) commit.
       ["c"] = false,
@@ -68,7 +70,7 @@ GBDEFJJ_EDITOR=${GBDEFJJ_EDITOR:-nvim_neogit}
   git add .
   git commit -m 'orig left'
 
-  # Re-apply and changes.
+  # Re-apply changes.
   patch --strip=1 <"$patch_file"
 
   # Interactively stage changes, then remove all unstaged changes.
