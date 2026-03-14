@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# https://www.knifepoint.net/~kat/kb-jj-patchedit.html
 set -e
 
 left="$1"
@@ -16,7 +15,7 @@ git_add_p() {
 
 nvim_neogit() {
   init=$(cat << EOF
--- Use <F4> to abort the split operation.
+-- Use <F4> to abort the diff-edit operation.
 vim.keymap.set("n", "<F4>", "<cmd>cq<cr>")
 
 -- Use cc to close the current buffer.
@@ -35,7 +34,8 @@ neogit.setup({
   mappings = {
     popup = {
       -- Disable this mapping to open the commit popup thereby enabling the
-      -- mapping of "c" from above.
+      -- mapping of "cc" from above which will then drop us into the commit
+      -- message description of the first (Jujutsu) commit.
       ["c"] = false,
     },
   },
