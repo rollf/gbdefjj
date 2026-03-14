@@ -6,6 +6,14 @@ set -e
 left="$1"
 right="$2"
 
+git_add_p() {
+  git add --intent-to-add .
+  git status
+  git add -p
+  git status
+  read -r -p "Press Enter to commit."
+}
+
 nvim_neogit() {
   init=$(cat << EOF
 -- Use <F4> to abort the split operation.
