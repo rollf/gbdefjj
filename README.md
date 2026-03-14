@@ -15,6 +15,7 @@ Their post inspired me to create `gbdefjj`.
 By default, `gbdefjj` will open Neogit (within Neovim).
 The user then interactively stages hunks as if they wanted to select changes to be committed within Git.
 But instead of committing, one simply closes Neovim and commits within `jj`.
+`Neogit` is configured specifically to ease this task.
 
 ## Setup
 
@@ -26,7 +27,7 @@ diff-editor = "/path/to/gbdefjj/gbdefjj"
 
 Instead of Neovim+Neogit, one may use anything that allows to stage changes within a Git repo.
 Simply dropping into the shell and running Git commands would do.
-Setting `GBDEFJJ_EDITOR` will changed the default behavior.
+Setting `GBDEFJJ_EDITOR` will change the default behavior.
 A `git add -p`-based workflow is provided and can be invoked like this:
 
 ```
