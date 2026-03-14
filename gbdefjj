@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # https://www.knifepoint.net/~kat/kb-jj-patchedit.html
-set -xev
+set -e
 
 left="$1"
 right="$2"
