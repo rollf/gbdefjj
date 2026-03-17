@@ -28,10 +28,11 @@ package.loaded["neogit"] = nil
 
 local neogit = require("neogit")
 neogit.setup({
-  disable_hint = false,
   sections = {
     -- Show new files (in this commit).
     untracked = { folded = false, hidden = false },
+    -- Do not show recent commits.
+    recent = { folded = true, hidden = true, },
   },
   mappings = {
     popup = {
