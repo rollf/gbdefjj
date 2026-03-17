@@ -56,22 +56,20 @@ EOF
 GBDEFJJ_EDITOR=${GBDEFJJ_EDITOR:-nvim_neogit}
 
 (
-  cd "$right"
+  cd "$left"
 
-  patch_file="$(mktemp --suffix=.patch)"
-
-  # Prepare patch by comparing left & right.
-  diff --new-file --text --unified --exclude JJ-INSTRUCTIONS --recursive "$left"/ ./ \
-    >"$patch_file" || (($? == 1))
-
-  # Un-apply patch and prepare the initial state.
-  patch --reverse --strip=1 <"$patch_file"
+  # Create Git repo in $left and move only the git_dir to $right.
+  # From Git's perspective, anything in $right that is not in $left is now
+  # unstaged.
   git init .
   git add .
   git commit -m 'orig left'
+  mv .git "$right"
+)
 
-  # Re-apply changes.
-  patch --strip=1 <"$patch_file"
+(
+  cd "$right"
+  rm JJ-INSTRUCTIONS
 
   # Interactively stage changes, then remove all unstaged changes.
   $GBDEFJJ_EDITOR
