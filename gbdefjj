@@ -64,7 +64,7 @@ GBDEFJJ_EDITOR=${GBDEFJJ_EDITOR:-nvim_neogit}
   # unstaged.
   git init .
   git add .
-  git commit -m 'orig left'
+  git commit -m 'orig left' || true # should succeed even if only new files in $right
   mv .git "$right"
 )
 
