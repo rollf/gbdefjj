@@ -72,9 +72,13 @@ GBDEFJJ_EDITOR=${GBDEFJJ_EDITOR:-nvim_neogit}
   cd "$right"
   rm JJ-INSTRUCTIONS
 
-  # Interactively stage changes, then remove all unstaged changes.
+  # Interactively stage changes.
   $GBDEFJJ_EDITOR
-  git checkout .
-  git clean -xfd
+
+  # Then remove all unstaged changes.
+  git restore . || true # remove changes (if any)
+  git clean -xfd # remove new files that have not been staged
+
+  # Finally, remove the temporary Git repo.
   rm -rf ./.git
 )
